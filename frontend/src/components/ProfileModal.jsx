@@ -72,6 +72,7 @@ export default function ProfileModal() {
         });
         setTimeout(() => setToastMessage(null), 5000);
       }
+      setIsProfileModalOpen(false);
     } catch (err) {
       console.error('Failed to update profile:', err);
     } finally {

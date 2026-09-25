@@ -41,7 +41,6 @@ export function AuthProvider({ children }) {
     const updated = await api.updateUserProfile(profileData);
     setUser(updated);
     localStorage.setItem('habitpulse_user', JSON.stringify(updated));
-    setIsProfileModalOpen(false);
     return updated;
   };
 

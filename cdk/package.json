@@ -1,0 +1,24 @@
+{
+  "name": "smart-habit-tracker-cdk",
+  "version": "1.0.0",
+  "description": "AWS CDK Infrastructure stack for Smart Habit & Micro-Goal Tracker",
+  "bin": {
+    "smart-habit-tracker-cdk": "bin/app.js"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "watch": "npx tsc -w",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.0",
+    "aws-cdk": "^2.138.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.3.3"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.138.0",
+    "constructs": "^10.0.0",
+    "smart-habit-tracker-root": "file:.."
+  }
+}

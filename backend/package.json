@@ -1,0 +1,23 @@
+{
+  "name": "smart-habit-tracker-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Smart Habit & Micro-Goal Accountability Tracker",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/lib-dynamodb": "^3.600.0",
+    "@vendia/serverless-express": "^4.12.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "smart-habit-tracker-root": "file:..",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

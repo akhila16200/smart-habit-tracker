@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Sparkles, UserCheck, Briefcase, GraduationCap, Home, Zap, ArrowRight, CheckCircle2, Shield, HeartPulse } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function OnboardingModal() {
   const { isOnboardingOpen, setIsOnboardingOpen, generateAiHabits } = useHabits();
+  const { user, updateProfile } = useAuth();
 
   const [step, setStep] = useState(1);
-  const [role, setRole] = useState('Working Professional');
-  const [primaryGoal, setPrimaryGoal] = useState('Improve daily productivity & balance');
+  const [role, setRole] = useState(user?.role || 'Working Professional');
+  const [primaryGoal, setPrimaryGoal] = useState(user?.primaryGoal || 'Improve daily productivity & balance');
   const [focusAreas, setFocusAreas] = useState(['Fitness', 'Learning', 'Mindfulness', 'Personal']);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedHabits, setGeneratedHabits] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role) setRole(user.role);
+      if (user.primaryGoal) setPrimaryGoal(user.primaryGoal);
+    }
+  }, [user, isOnboardingOpen]);
 
   if (!isOnboardingOpen) return null;
 
@@ -34,6 +43,15 @@ export default function OnboardingModal() {
     try {
       setIsGenerating(true);
       setStep(3);
+
+      // Two-Way Data Binding: Immediately update master user profile state & persistent database
+      if (updateProfile) {
+        await updateProfile({
+          role,
+          primaryGoal
+        });
+      }
+
       const habits = await generateAiHabits({
         role,
         primaryGoal,

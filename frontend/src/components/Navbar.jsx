@@ -1,11 +1,12 @@
 import React from 'react';
-import { Flame, Plus, Database, Activity, Brain, Moon, Sun, User, LogOut, LogIn } from 'lucide-react';
+import { Flame, Plus, Database, Activity, Brain, Moon, Sun, User, LogOut, LogIn, Settings } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar({ onOpenWearables, onOpenAiCoach, theme, toggleTheme }) {
   const { setIsModalOpen } = useHabits();
-  const { user, setIsAuthModalOpen, logout } = useAuth();
+  const { user, setIsAuthModalOpen, setIsProfileModalOpen, logout } = useAuth();
+
 
   return (
     <header style={{
@@ -120,10 +121,34 @@ export default function Navbar({ onOpenWearables, onOpenAiCoach, theme, toggleTh
                 <Plus size={16} /> New Habit
               </button>
 
-              {/* User Info & Logout Button */}
+              {/* User Info & Profile/Settings Button */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.05)', padding: '4px 12px', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
-                <User size={14} color="var(--accent-purple)" />
-                <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{user.name || user.email}</span>
+                <button
+                  onClick={() => setIsProfileModalOpen(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-primary)',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    padding: '2px 4px'
+                  }}
+                  title="Open Profile & Settings"
+                >
+                  <User size={14} color="var(--accent-purple)" />
+                  <span>{user.name || user.email}</span>
+                  {user.role && (
+                    <span style={{ fontSize: '0.68rem', color: 'var(--accent-purple)', background: 'rgba(139, 92, 246, 0.15)', padding: '1px 6px', borderRadius: '8px' }}>
+                      {user.role}
+                    </span>
+                  )}
+                  <Settings size={13} color="var(--text-muted)" style={{ marginLeft: '2px' }} />
+                </button>
+
                 <button
                   onClick={logout}
                   style={{
@@ -146,6 +171,7 @@ export default function Navbar({ onOpenWearables, onOpenAiCoach, theme, toggleTh
                   <LogOut size={12} /> Logout
                 </button>
               </div>
+
             </>
           ) : (
             <button

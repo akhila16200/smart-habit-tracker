@@ -6,6 +6,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
@@ -36,9 +37,18 @@ export function AuthProvider({ children }) {
     return res.user;
   };
 
+  const updateProfile = async (profileData) => {
+    const updated = await api.updateUserProfile(profileData);
+    setUser(updated);
+    localStorage.setItem('habitpulse_user', JSON.stringify(updated));
+    setIsProfileModalOpen(false);
+    return updated;
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('habitpulse_user');
+    setIsProfileModalOpen(false);
   };
 
   return (
@@ -49,8 +59,11 @@ export function AuthProvider({ children }) {
         authLoading,
         isAuthModalOpen,
         setIsAuthModalOpen,
+        isProfileModalOpen,
+        setIsProfileModalOpen,
         login,
         signup,
+        updateProfile,
         logout
       }}
     >

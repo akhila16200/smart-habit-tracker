@@ -1,31 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Timer, Award, CheckCircle2, Sparkles, BookOpen, ShieldCheck, ShieldAlert, AlertTriangle, ExternalLink, Plus, Check, X, Shield, Code, Terminal, FileCode, Layers } from 'lucide-react';
+import { Play, Pause, RotateCcw, Timer, Award, CheckCircle2, Sparkles, BookOpen, ShieldCheck, ShieldAlert, AlertTriangle, ExternalLink, Plus, Check, X, Shield, Code, Terminal, FileCode, Layers, UserCheck } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
+import { useAuth } from '../context/AuthContext';
 import confetti from 'canvas-confetti';
 
-const PLATFORMS = [
-  { id: 'leetcode', name: 'LeetCode', icon: '🟠', domain: 'leetcode.com', defaultUrl: 'leetcode.com/problems' },
-  { id: 'hackerrank', name: 'HackerRank', icon: '🟢', domain: 'hackerrank.com', defaultUrl: 'hackerrank.com/challenges' },
-  { id: 'geeksforgeeks', name: 'GeeksforGeeks', icon: '🌿', domain: 'geeksforgeeks.org', defaultUrl: 'geeksforgeeks.org/dsa' },
-  { id: 'github', name: 'GitHub', icon: '🐙', domain: 'github.com', defaultUrl: 'github.com/my-project' },
-  { id: 'vscode', name: 'VS Code Web', icon: '💻', domain: 'vscode.dev', defaultUrl: 'vscode.dev' },
-  { id: 'docs', name: 'Documentation', icon: '📚', domain: 'developer.mozilla.org', defaultUrl: 'developer.mozilla.org/docs' },
-  { id: 'courses', name: 'Online Courses', icon: '🎓', domain: 'coursera.org', defaultUrl: 'coursera.org/learn' }
-];
+const ROLE_PLATFORMS = {
+  Student: [
+    { id: 'leetcode', name: 'LeetCode', icon: '🟠', domain: 'leetcode.com', defaultUrl: 'leetcode.com/problems', category: 'Learning' },
+    { id: 'hackerrank', name: 'HackerRank', icon: '🟢', domain: 'hackerrank.com', defaultUrl: 'hackerrank.com/challenges', category: 'Learning' },
+    { id: 'geeksforgeeks', name: 'GeeksforGeeks', icon: '🌿', domain: 'geeksforgeeks.org', defaultUrl: 'geeksforgeeks.org/dsa', category: 'Learning' },
+    { id: 'courses', name: 'Online Courses', icon: '🎓', domain: 'coursera.org', defaultUrl: 'coursera.org/learn', category: 'Learning' },
+    { id: 'docs', name: 'Documentation', icon: '📚', domain: 'developer.mozilla.org', defaultUrl: 'developer.mozilla.org/docs', category: 'Learning' },
+    { id: 'github', name: 'GitHub', icon: '🐙', domain: 'github.com', defaultUrl: 'github.com/my-project', category: 'Learning' }
+  ],
+  'Working Professional': [
+    { id: 'vscode', name: 'VS Code Web', icon: '💻', domain: 'vscode.dev', defaultUrl: 'vscode.dev', category: 'Productivity' },
+    { id: 'github', name: 'GitHub Workspace', icon: '🐙', domain: 'github.com', defaultUrl: 'github.com/org/repo', category: 'Productivity' },
+    { id: 'cloud', name: 'AWS Cloud Console', icon: '☁️', domain: 'aws.amazon.com', defaultUrl: 'console.aws.amazon.com', category: 'Productivity' },
+    { id: 'docs', name: 'Tech Documentation', icon: '📚', domain: 'developer.mozilla.org', defaultUrl: 'developer.mozilla.org/docs', category: 'Learning' },
+    { id: 'notion', name: 'Notion / Confluence', icon: '📝', domain: 'notion.so', defaultUrl: 'notion.so/workspace', category: 'Productivity' },
+    { id: 'leetcode', name: 'LeetCode Practice', icon: '🟠', domain: 'leetcode.com', defaultUrl: 'leetcode.com/problems', category: 'Learning' }
+  ],
+  Homemaker: [
+    { id: 'wellness', name: 'Wellness & Hydration', icon: '🌿', domain: 'calm.com', defaultUrl: 'calm.com/meditate', category: 'Mindfulness' },
+    { id: 'mindfulness', name: 'Mindfulness App', icon: '🧘', domain: 'headspace.com', defaultUrl: 'headspace.com/meditation', category: 'Mindfulness' },
+    { id: 'journaling', name: 'Personal Journaling', icon: '📓', domain: 'notion.so', defaultUrl: 'notion.so/journal', category: 'Personal' },
+    { id: 'audiobooks', name: 'Audiobook & Growth', icon: '🎧', domain: 'audible.com', defaultUrl: 'audible.com/library', category: 'Learning' },
+    { id: 'fitness', name: 'Daily Home Workout', icon: '🏋️', domain: 'youtube.com', defaultUrl: 'youtube.com/workout', category: 'Fitness' }
+  ],
+  'Fitness Enthusiast': [
+    { id: 'fitness', name: 'Workout & Cardio Tracker', icon: '🏋️', domain: 'fitbit.com', defaultUrl: 'fitbit.com/dashboard', category: 'Fitness' },
+    { id: 'stretching', name: 'Mobility & Stretching', icon: '🏃', domain: 'strava.com', defaultUrl: 'strava.com/dashboard', category: 'Fitness' },
+    { id: 'nutrition', name: 'Nutrition & Meal Prep', icon: '🥗', domain: 'myfitnesspal.com', defaultUrl: 'myfitnesspal.com/log', category: 'Personal' },
+    { id: 'mindfulness', name: 'Mindful Recovery', icon: '🧘', domain: 'headspace.com', defaultUrl: 'headspace.com/meditation', category: 'Mindfulness' },
+    { id: 'learning', name: 'Sports Science & Articles', icon: '📚', domain: 'pubmed.ncbi.nlm.nih.gov', defaultUrl: 'pubmed.ncbi.nlm.nih.gov', category: 'Learning' }
+  ],
+  Entrepreneur: [
+    { id: 'cloud', name: 'AWS Cloud Console', icon: '☁️', domain: 'aws.amazon.com', defaultUrl: 'console.aws.amazon.com', category: 'Productivity' },
+    { id: 'github', name: 'GitHub Codebase', icon: '🐙', domain: 'github.com', defaultUrl: 'github.com/my-startup', category: 'Productivity' },
+    { id: 'notion', name: 'Notion Strategy HQ', icon: '🚀', domain: 'notion.so', defaultUrl: 'notion.so/strategy', category: 'Productivity' },
+    { id: 'vscode', name: 'VS Code Web', icon: '💻', domain: 'vscode.dev', defaultUrl: 'vscode.dev', category: 'Productivity' },
+    { id: 'learning', name: 'Market Research & News', icon: '📊', domain: 'news.ycombinator.com', defaultUrl: 'news.ycombinator.com', category: 'Learning' }
+  ]
+};
 
-const DEFAULT_WHITELIST = [
-  'leetcode.com',
-  'hackerrank.com',
-  'geeksforgeeks.org',
-  'github.com',
-  'vscode.dev',
-  'developer.mozilla.org',
-  'docs.python.org',
-  'aws.amazon.com',
-  'coursera.org',
-  'udemy.com',
-  'khanacademy.org'
-];
+function getRolePlatforms(roleStr) {
+  if (!roleStr) return ROLE_PLATFORMS['Working Professional'];
+  const lower = roleStr.toLowerCase();
+  if (lower.includes('student') || lower.includes('scholar')) return ROLE_PLATFORMS.Student;
+  if (lower.includes('homemaker') || lower.includes('caregiver')) return ROLE_PLATFORMS.Homemaker;
+  if (lower.includes('fitness') || lower.includes('health')) return ROLE_PLATFORMS['Fitness Enthusiast'];
+  if (lower.includes('entrepreneur') || lower.includes('freelancer')) return ROLE_PLATFORMS.Entrepreneur;
+  return ROLE_PLATFORMS['Working Professional'];
+}
 
 function isLearningDomain(urlOrDomain, whitelist) {
   if (!urlOrDomain) return false;
@@ -35,6 +62,10 @@ function isLearningDomain(urlOrDomain, whitelist) {
 
 export default function FocusTimer() {
   const { habits, checkIn, setToastMessage } = useHabits();
+  const { user } = useAuth();
+
+  const userRole = user?.role || 'Working Professional';
+  const availablePlatforms = getRolePlatforms(userRole);
 
   const presets = [
     { label: '25m Pomodoro', minutes: 25 },
@@ -42,16 +73,7 @@ export default function FocusTimer() {
     { label: '50m Code & Study', minutes: 50 },
   ];
 
-  const domainPresets = [
-    { label: 'leetcode.com/problems', valid: true },
-    { label: 'github.com/my-project', valid: true },
-    { label: 'developer.mozilla.org', valid: true },
-    { label: 'twitter.com/feed', valid: false },
-    { label: 'youtube.com/shorts', valid: false },
-    { label: 'reddit.com/r/all', valid: false },
-  ];
-
-  const [selectedPlatformId, setSelectedPlatformId] = useState('leetcode');
+  const [selectedPlatformId, setSelectedPlatformId] = useState(availablePlatforms[0].id);
   const [selectedMinutes, setSelectedMinutes] = useState(25);
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
   const [isActive, setIsActive] = useState(false);
@@ -62,32 +84,44 @@ export default function FocusTimer() {
   const [hasDomainGuardPermission, setHasDomainGuardPermission] = useState(false);
   const [isGuardEnabled, setIsGuardEnabled] = useState(true);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
-  const [whitelistedDomains, setWhitelistedDomains] = useState(DEFAULT_WHITELIST);
-  const [activeDomainUrl, setActiveDomainUrl] = useState('leetcode.com/problems/two-sum');
+  const [activeDomainUrl, setActiveDomainUrl] = useState(availablePlatforms[0].defaultUrl);
   const [domainWarning, setDomainWarning] = useState(null);
-  const [newDomainInput, setNewDomainInput] = useState('');
-  const [showAddDomainInput, setShowAddDomainInput] = useState(false);
 
-  const selectedPlatform = PLATFORMS.find(p => p.id === selectedPlatformId) || PLATFORMS[0];
+  // Build dynamic whitelist based on active role platforms
+  const whitelistedDomains = Array.from(new Set([
+    ...availablePlatforms.map(p => p.domain),
+    'leetcode.com', 'github.com', 'vscode.dev', 'developer.mozilla.org', 'aws.amazon.com', 'coursera.org', 'notion.so', 'calm.com', 'headspace.com'
+  ]));
 
-  // Default habit selection
+  const selectedPlatform = availablePlatforms.find(p => p.id === selectedPlatformId) || availablePlatforms[0];
+
+  // Dynamic habit filtering matching target category of selected platform
+  const targetCategoryHabits = habits.filter(h =>
+    (h.category || '').toLowerCase() === (selectedPlatform.category || 'learning').toLowerCase()
+  );
+  const habitOptions = targetCategoryHabits.length > 0 ? targetCategoryHabits : habits;
+
+  // Sync default platform and habit selection when role/habits change
   useEffect(() => {
-    if (habits && habits.length > 0 && !selectedHabitId) {
-      const studyHabit = habits.find(h =>
-        h.category?.toLowerCase() === 'learning' ||
-        h.category?.toLowerCase() === 'productivity' ||
-        h.title.toLowerCase().includes('study') ||
-        h.title.toLowerCase().includes('work') ||
-        h.title.toLowerCase().includes('coding')
-      );
-      setSelectedHabitId(studyHabit ? studyHabit.id : habits[0].id);
+    if (availablePlatforms.length > 0 && !availablePlatforms.some(p => p.id === selectedPlatformId)) {
+      const first = availablePlatforms[0];
+      setSelectedPlatformId(first.id);
+      setActiveDomainUrl(first.defaultUrl);
     }
-  }, [habits]);
+  }, [userRole]);
+
+  useEffect(() => {
+    if (habitOptions && habitOptions.length > 0) {
+      if (!habitOptions.some(h => h.id === selectedHabitId)) {
+        setSelectedHabitId(habitOptions[0].id);
+      }
+    }
+  }, [habitOptions, selectedPlatformId]);
 
   // Synchronize platform selection with active domain URL simulator
   const handleSelectPlatform = (platformId) => {
     setSelectedPlatformId(platformId);
-    const plat = PLATFORMS.find(p => p.id === platformId);
+    const plat = availablePlatforms.find(p => p.id === platformId) || availablePlatforms[0];
     if (plat) {
       setActiveDomainUrl(plat.defaultUrl);
     }
@@ -103,7 +137,7 @@ export default function FocusTimer() {
         const invalidDomain = activeDomainUrl || 'non-whitelisted-site.com';
         setDomainWarning({
           domain: invalidDomain,
-          message: `🛑 AI Focus Guard Alert: You switched to non-learning domain '${invalidDomain}' during your ${selectedPlatform.name} session! Timer automatically paused to prevent distraction. Return to ${selectedPlatform.name} (${selectedPlatform.domain}) to resume.`
+          message: `🛑 AI Focus Guard Alert: You switched to non-whitelisted domain '${invalidDomain}' during your ${selectedPlatform.name} session! Timer automatically paused to prevent distraction. Return to ${selectedPlatform.name} (${selectedPlatform.domain}) to resume.`
         });
       }
     }
@@ -145,7 +179,7 @@ export default function FocusTimer() {
         if (!isValid) {
           setDomainWarning({
             domain: activeDomainUrl,
-            message: `🛑 Cannot start focus timer on non-learning domain '${activeDomainUrl}'. Please switch to a whitelisted platform (e.g. ${selectedPlatform.name}).`
+            message: `🛑 Cannot start focus timer on non-whitelisted domain '${activeDomainUrl}'. Please switch to ${selectedPlatform.name} (${selectedPlatform.domain}).`
           });
           return;
         }
@@ -164,7 +198,7 @@ export default function FocusTimer() {
     if (!isValid) {
       setDomainWarning({
         domain: activeDomainUrl,
-        message: `🛑 Active Domain Guard enabled! Current domain '${activeDomainUrl}' is non-learning. Switch to ${selectedPlatform.name} (${selectedPlatform.domain}) to start timer.`
+        message: `🛑 Active Domain Guard enabled! Current domain '${activeDomainUrl}' is non-whitelisted. Switch to ${selectedPlatform.name} (${selectedPlatform.domain}) to start timer.`
       });
     } else {
       setDomainWarning(null);
@@ -186,18 +220,6 @@ export default function FocusTimer() {
     setDomainWarning(null);
   };
 
-  const handleAddCustomDomain = (e) => {
-    e.preventDefault();
-    if (!newDomainInput.trim()) return;
-    const cleanDomain = newDomainInput.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '');
-    if (!whitelistedDomains.includes(cleanDomain)) {
-      setWhitelistedDomains([...whitelistedDomains, cleanDomain]);
-    }
-    setNewDomainInput('');
-    setShowAddDomainInput(false);
-    setDomainWarning(null);
-  };
-
   const handleSessionCompleted = async () => {
     confetti({
       particleCount: 140,
@@ -205,15 +227,15 @@ export default function FocusTimer() {
       origin: { y: 0.6 }
     });
 
-    const targetHabit = habits.find(h => h.id === selectedHabitId) || habits[0];
+    const targetHabit = habits.find(h => h.id === selectedHabitId) || habitOptions[0] || habits[0];
     if (targetHabit) {
       await checkIn(targetHabit.id);
     }
 
     const aiQuotes = [
-      `🏆 Outstanding ${selectedMinutes}-minute deep sprint on ${selectedPlatform.name} ${selectedPlatform.icon}! You auto-completed '${targetHabit ? targetHabit.title : 'Study Goal'}' for today and boosted your streak!`,
-      `🚀 High-output focus unlocked on ${selectedPlatform.name}! Logged ${selectedMinutes}m of uninterrupted study. Your daily micro-goal target is complete!`,
-      `🧠 Peak cognitive mastery! Completing your ${selectedMinutes}-minute ${selectedPlatform.name} session places your habit consistency in the top tier of achievers.`
+      `🏆 Outstanding ${selectedMinutes}-minute sprint on ${selectedPlatform.name} ${selectedPlatform.icon}! Tailored for your '${userRole}' role. You auto-completed '${targetHabit ? targetHabit.title : 'Micro-Goal'}' for today!`,
+      `🚀 High-output focus unlocked on ${selectedPlatform.name}! Logged ${selectedMinutes}m of uninterrupted consistency. Your daily streak is alive and thriving!`,
+      `🧠 Peak cognitive mastery! Completing your ${selectedMinutes}-minute ${selectedPlatform.name} session places your habit consistency in the top tier of disciplined achievers.`
     ];
 
     const randomQuote = aiQuotes[Math.floor(Math.random() * aiQuotes.length)];
@@ -260,6 +282,22 @@ export default function FocusTimer() {
               <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', fontWeight: 800 }}>
                 Focus & Auto-Study Tracker
               </h3>
+              {/* Role Badge */}
+              <span style={{
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: '10px',
+                background: 'rgba(139, 92, 246, 0.2)',
+                color: 'var(--accent-purple)',
+                border: '1px solid rgba(139, 92, 246, 0.4)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <UserCheck size={10} /> {userRole} Mode
+              </span>
+
               {/* Domain Guard Status Pill */}
               <button
                 onClick={() => setIsGuardEnabled(!isGuardEnabled)}
@@ -279,11 +317,11 @@ export default function FocusTimer() {
                 title="Toggle Active Learning Domain Guard"
               >
                 {isGuardEnabled ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
-                {isGuardEnabled ? 'Domain Guard ON' : 'Domain Guard OFF'}
+                {isGuardEnabled ? 'Guard ON' : 'Guard OFF'}
               </button>
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-              Select platform, complete timed focus, and auto-check-in your daily study habit
+              Tailored tools for <strong style={{ color: 'var(--accent-purple)' }}>{userRole}</strong> routines. Complete sessions to auto-check-in active habits.
             </p>
           </div>
         </div>
@@ -312,7 +350,7 @@ export default function FocusTimer() {
         </div>
       </div>
 
-      {/* 1. VISUAL PLATFORM SELECTOR */}
+      {/* 1. ROLE-ADAPTED PLATFORM SELECTOR */}
       <div style={{
         marginBottom: '20px',
         padding: '16px',
@@ -322,16 +360,16 @@ export default function FocusTimer() {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Layers size={14} color="var(--accent-cyan)" /> Select Active Learning Platform:
+            <Layers size={14} color="var(--accent-cyan)" /> Active Tools Prioritized for {userRole}:
           </label>
           <span style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
-            {selectedPlatform.icon} {selectedPlatform.name} Active
+            {selectedPlatform.icon} {selectedPlatform.name} ({selectedPlatform.category})
           </span>
         </div>
 
         {/* Visual Platform Selector Chips Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '8px' }}>
-          {PLATFORMS.map(p => {
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px' }}>
+          {availablePlatforms.map(p => {
             const isSelected = selectedPlatformId === p.id;
             return (
               <button
@@ -339,13 +377,13 @@ export default function FocusTimer() {
                 onClick={() => handleSelectPlatform(p.id)}
                 disabled={isActive}
                 style={{
-                  padding: '8px 12px',
+                  padding: '10px 12px',
                   borderRadius: 'var(--radius-sm)',
                   background: isSelected ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255, 255, 255, 0.04)',
                   border: isSelected ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)',
                   color: isSelected ? 'white' : 'var(--text-secondary)',
                   fontWeight: isSelected ? 700 : 500,
-                  fontSize: '0.8rem',
+                  fontSize: '0.82rem',
                   cursor: isActive ? 'not-allowed' : 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -354,8 +392,11 @@ export default function FocusTimer() {
                   opacity: isActive && !isSelected ? 0.5 : 1
                 }}
               >
-                <span style={{ fontSize: '1.1rem' }}>{p.icon}</span>
-                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</span>
+                <span style={{ fontSize: '1.2rem' }}>{p.icon}</span>
+                <div style={{ textAlign: 'left', overflow: 'hidden' }}>
+                  <span style={{ display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</span>
+                  <span style={{ fontSize: '0.68rem', color: isSelected ? '#A7F3D0' : 'var(--text-muted)' }}>{p.category}</span>
+                </div>
               </button>
             );
           })}
@@ -374,7 +415,7 @@ export default function FocusTimer() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <ExternalLink size={14} color={isCurrentDomainValid ? '#34D399' : '#FCA5A5'} />
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-              Domain Guard Monitor & Tab Simulator:
+              Domain Guard Monitor & Active Tab:
             </span>
           </div>
 
@@ -386,39 +427,11 @@ export default function FocusTimer() {
             background: isCurrentDomainValid ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
             color: isCurrentDomainValid ? '#34D399' : '#FCA5A5'
           }}>
-            {isCurrentDomainValid ? `✅ Matched (${selectedPlatform.name})` : '🛑 Non-Learning Domain'}
+            {isCurrentDomainValid ? `✅ Matched (${selectedPlatform.name})` : '🛑 Non-Whitelisted Domain'}
           </span>
         </div>
 
-        {/* Quick Simulator Preset Domain Chips */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
-          {domainPresets.map((dp, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setActiveDomainUrl(dp.label);
-                setDomainWarning(null);
-              }}
-              style={{
-                padding: '4px 10px',
-                borderRadius: '14px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                border: activeDomainUrl === dp.label ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
-                background: activeDomainUrl === dp.label ? 'rgba(6, 182, 212, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                color: dp.valid ? '#A7F3D0' : '#FCA5A5',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-            >
-              <span>{dp.valid ? '✅' : '🛑'}</span> {dp.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Domain Text Input & Custom Add Whitelist */}
+        {/* Domain Text Input */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <input
             type="text"
@@ -431,37 +444,10 @@ export default function FocusTimer() {
               setDomainWarning(null);
             }}
           />
-
-          <button
-            onClick={() => setShowAddDomainInput(!showAddDomainInput)}
-            className="btn-secondary"
-            style={{ padding: '6px 12px', fontSize: '0.78rem', flexShrink: 0 }}
-            title="Add custom domain to Whitelist"
-          >
-            <Plus size={14} /> Add Whitelist
-          </button>
         </div>
-
-        {/* Add Custom Whitelist Form */}
-        {showAddDomainInput && (
-          <form onSubmit={handleAddCustomDomain} style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-            <input
-              type="text"
-              className="form-control"
-              style={{ padding: '6px 12px', fontSize: '0.82rem', flex: 1 }}
-              placeholder="e.g. edx.org or stackoverflow.com"
-              value={newDomainInput}
-              onChange={(e) => setNewDomainInput(e.target.value)}
-              required
-            />
-            <button type="submit" className="btn-primary" style={{ padding: '6px 12px', fontSize: '0.78rem' }}>
-              Add
-            </button>
-          </form>
-        )}
       </div>
 
-      {/* Warning Banner if non-learning domain is detected */}
+      {/* Warning Banner if non-whitelisted domain is detected */}
       {domainWarning && (
         <div style={{
           background: 'rgba(239, 68, 68, 0.18)',
@@ -478,7 +464,7 @@ export default function FocusTimer() {
           <AlertTriangle size={22} color="#EF4444" style={{ flexShrink: 0, marginTop: '2px' }} />
           <div style={{ flex: 1 }}>
             <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#FCA5A5', marginBottom: '4px' }}>
-              Timer Paused: Non-Learning Domain Detected
+              Timer Paused: Non-Whitelisted Domain Detected
             </h4>
             <p style={{ fontSize: '0.85rem', color: '#FEE2E2', lineHeight: 1.4 }}>
               {domainWarning.message}
@@ -515,7 +501,7 @@ export default function FocusTimer() {
           border: '1px solid rgba(255, 255, 255, 0.05)',
           position: 'relative'
         }}>
-          {/* 2. CONTEXT-AWARE TIMER SCREEN BANNER */}
+          {/* CONTEXT-AWARE TIMER SCREEN BANNER */}
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -580,19 +566,25 @@ export default function FocusTimer() {
           </div>
         </div>
 
-        {/* Right: Target Habit Selection & Status */}
+        {/* Right: AI HABIT SYNCED DROPDOWN & STATUS */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div className="form-group">
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <BookOpen size={14} color="var(--accent-cyan)" /> Target Habit to Auto-Check-In
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, fontSize: '0.85rem' }}>
+                <BookOpen size={14} color="var(--accent-cyan)" /> Auto-Check-In AI Habit ({selectedPlatform.category})
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--accent-purple)', fontWeight: 600 }}>
+                Synced to {userRole}
+              </span>
             </label>
+
             <select
               className="form-control"
               value={selectedHabitId}
               onChange={(e) => setSelectedHabitId(e.target.value)}
               disabled={isActive}
             >
-              {habits.map(h => (
+              {habitOptions.map(h => (
                 <option key={h.id} value={h.id}>
                   {h.title} ({h.category || 'General'})
                 </option>
@@ -618,7 +610,7 @@ export default function FocusTimer() {
               : `Press Start to initiate your timed ${selectedPlatform.name} sprint.`}
           </div>
 
-          {/* 3. AUTO-COMPLETION & AI MOTIVATION SUCCESS CARD */}
+          {/* AUTO-COMPLETION & AI MOTIVATION SUCCESS CARD */}
           {completedQuote && (
             <div style={{
               padding: '16px',
@@ -673,7 +665,7 @@ export default function FocusTimer() {
                     Active Domain Guard Permission
                   </h3>
                   <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                    Smart Focus Protection System
+                    Smart Focus Protection for {userRole}
                   </span>
                 </div>
               </div>
@@ -687,7 +679,7 @@ export default function FocusTimer() {
             </div>
 
             <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.5, marginBottom: '16px' }}>
-              Enable <strong>Active Learning Domain Guard</strong> to automatically monitor active tab URLs. If distraction sites (social media, entertainment) are opened during your <strong>{selectedPlatform.name}</strong> focus session, the timer will automatically pause and issue an AI motivational reminder.
+              Enable <strong>Active Domain Guard</strong> to automatically monitor active tab URLs during your <strong>{selectedPlatform.name}</strong> focus session. If distraction sites are opened, the timer will automatically pause and issue an AI motivational reminder.
             </p>
 
             <div style={{
@@ -698,10 +690,10 @@ export default function FocusTimer() {
               border: '1px solid var(--border-color)'
             }}>
               <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--accent-cyan)', display: 'block', marginBottom: '6px' }}>
-                Target Platform: {selectedPlatform.icon} {selectedPlatform.name}
+                Target Tool: {selectedPlatform.icon} {selectedPlatform.name} ({selectedPlatform.category})
               </span>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Whitelisted Learning & Coding Platforms: LeetCode, HackerRank, GeeksforGeeks, GitHub, VS Code Web, MDN Docs, Python Docs, AWS Docs, Coursera, Udemy, & Khan Academy.
+                Prioritized Whitelisted Tools for {userRole}: {availablePlatforms.map(p => p.name).join(', ')}.
               </p>
             </div>
 

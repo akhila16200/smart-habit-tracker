@@ -12,6 +12,7 @@ import FocusTimer from './components/FocusTimer';
 import ProductivityScoreboard from './components/ProductivityScoreboard';
 import OnboardingModal from './components/OnboardingModal';
 import AuthPage from './components/AuthPage';
+import ProfileModal from './components/ProfileModal';
 import { useHabits } from './context/HabitContext';
 import { useAuth } from './context/AuthContext';
 import { Search, PlusCircle, AlertTriangle, Sparkles, Activity, Brain } from 'lucide-react';
@@ -309,6 +310,7 @@ export default function App() {
       <HabitModal />
       <AuthModal />
       <OnboardingModal />
+      <ProfileModal />
       <WearableModal isOpen={isWearablesOpen} onClose={() => setIsWearablesOpen(false)} />
       <AiCoachDrawer isOpen={isAiCoachOpen} onClose={() => setIsAiCoachOpen(false)} />
 

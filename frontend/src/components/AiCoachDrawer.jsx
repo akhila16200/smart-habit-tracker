@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Brain, Flame, Target, Zap, Lightbulb } from 'lucide-react';
+import { X, Sparkles, Brain, Flame, Target, Zap, Lightbulb, UserCheck, RefreshCw } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
+import { useAuth } from '../context/AuthContext';
 import { suggestMicroGoals } from '../services/api';
 
 export default function AiCoachDrawer({ isOpen, onClose }) {
-  const { habits, analytics } = useHabits();
+  const { habits, analytics, generateAiHabits } = useHabits();
+  const { user } = useAuth();
 
   const [selectedHabitId, setSelectedHabitId] = useState('');
   const [generatedSuggestions, setGeneratedSuggestions] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   if (!isOpen) return null;
+
+  const userRole = user?.role || 'Working Professional';
+  const primaryGoal = user?.primaryGoal || 'Improve daily productivity & balance';
 
   const maxStreak = analytics ? analytics.maxStreak : 0;
   const completedToday = analytics ? analytics.completedToday : 0;
@@ -29,6 +35,20 @@ export default function AiCoachDrawer({ isOpen, onClose }) {
       console.error('AI Coach error:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRegenerateRoleHabits = async () => {
+    try {
+      setIsRegenerating(true);
+      await generateAiHabits({
+        role: userRole,
+        primaryGoal
+      });
+    } catch (err) {
+      console.error('Error re-generating role habits:', err);
+    } finally {
+      setIsRegenerating(false);
     }
   };
 
@@ -79,6 +99,38 @@ export default function AiCoachDrawer({ isOpen, onClose }) {
             }}
           >
             <X size={22} />
+          </button>
+        </div>
+
+        {/* Dynamic Role Adaptation Card */}
+        <div style={{
+          padding: '16px',
+          borderRadius: 'var(--radius-md)',
+          background: 'rgba(139, 92, 246, 0.1)',
+          border: '1px solid rgba(139, 92, 246, 0.3)',
+          marginBottom: '20px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <UserCheck size={14} color="var(--accent-purple)" /> Active Onboarding Role:
+            </span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '2px 8px', borderRadius: '10px', background: 'rgba(139, 92, 246, 0.2)', color: 'var(--accent-purple)' }}>
+              {userRole}
+            </span>
+          </div>
+
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+            Primary Goal: <strong style={{ color: 'var(--text-primary)' }}>{primaryGoal}</strong>
+          </p>
+
+          <button
+            onClick={handleRegenerateRoleHabits}
+            className="btn-ai"
+            disabled={isRegenerating}
+            style={{ width: '100%', justifyContent: 'center', padding: '10px', fontSize: '0.85rem' }}
+          >
+            {isRegenerating ? <RefreshCw size={16} className="spin" /> : <Sparkles size={16} />}
+            {isRegenerating ? 'Synthesizing...' : `Re-Generate Habit Suite for ${userRole}`}
           </button>
         </div>
 

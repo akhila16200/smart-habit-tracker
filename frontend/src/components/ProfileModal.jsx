@@ -282,7 +282,7 @@ export default function ProfileModal() {
               <ShieldCheck size={14} color="var(--accent-purple)" />
               <span>User ID: <strong style={{ color: 'var(--text-secondary)' }}>{user ? user.id : 'USER#default'}</strong></span>
             </div>
-            <span>AWS DynamoDB Protected</span>
+            <span>Encrypted Profile Storage</span>
           </div>
 
           {/* Action CTAs */}

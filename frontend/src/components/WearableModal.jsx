@@ -119,7 +119,7 @@ export default function WearableModal({ isOpen, onClose }) {
     setPairedDevices(updatedList);
     localStorage.setItem(storageKey, JSON.stringify(updatedList));
 
-    // Persist connected wearables to user profile in AWS DynamoDB / local JSON
+    // Persist connected wearables to user profile in Cloud Storage / local JSON
     if (updateProfile) {
       const wearablesMap = {};
       updatedList.forEach(dev => {
@@ -183,7 +183,7 @@ export default function WearableModal({ isOpen, onClose }) {
               detectedBattery = `${val.getUint8(0)}%`;
             }
           } catch (gErr) {
-            console.log('[GATT Battery Read Fallback]', gErr.message);
+            console.warn('[GATT Battery Read Fallback]', gErr.message);
           }
         } catch (bleErr) {
           console.warn('Web Bluetooth scan cancelled/failed:', bleErr.message);
@@ -630,7 +630,7 @@ export default function WearableModal({ isOpen, onClose }) {
           gap: '8px'
         }}>
           <Zap size={16} color="var(--accent-purple)" />
-          Encrypted OAuth2 / HTTPS Webhook synchronization with Amazon DynamoDB.
+          Encrypted OAuth2 / HTTPS Webhook synchronization with Cloud Storage.
         </div>
       </div>
     </div>

@@ -112,7 +112,6 @@ export function HabitProvider({ children }) {
   const simulateWearableSync = async () => {
     try {
       const samplePayload = {
-        userId: 'USER#default',
         provider: 'Fitbit Wearable',
         metrics: {
           steps: 4500,

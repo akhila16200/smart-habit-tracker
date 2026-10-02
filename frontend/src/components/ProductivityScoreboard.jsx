@@ -187,7 +187,7 @@ export default function ProductivityScoreboard() {
             {statusDescriptions[status.label] || statusDescriptions.Good}
           </p>
           <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: `1px solid ${status.color}25`, fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <ShieldCheck size={14} color={status.color} /> Real-time scoring synced with Amazon DynamoDB
+            <ShieldCheck size={14} color={status.color} /> Real-time scoring synced with Cloud Engine
           </div>
         </div>
       </div>

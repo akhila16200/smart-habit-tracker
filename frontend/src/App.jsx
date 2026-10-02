@@ -172,10 +172,10 @@ export default function App() {
               alignItems: 'center',
               gap: '6px'
             }}>
-              <Sparkles size={14} /> AWS Hackathon Architecture Scaffolding
+              <Sparkles size={14} /> AI-DRIVEN HABIT & FOCUS ECOSYSTEM
             </span>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 800, marginTop: '4px' }}>
-              Micro-Goal Habits with AWS DynamoDB & AI Wearables
+              Micro-Goal Habits & Autonomous AI Focus Tracker
             </h2>
             <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginTop: '4px', maxWidth: '650px' }}>
               Logged in as <strong style={{ color: 'var(--accent-purple)' }}>{user ? user.email : 'Demo User'}</strong>. Deconstruct ambitious goals into daily micro-tasks, sync wearables, and track consistency heatmaps.
@@ -323,7 +323,7 @@ export default function App() {
         color: 'var(--text-muted)',
         marginTop: '40px'
       }}>
-        Smart Habit & Micro-Goal Accountability Tracker • Built for AWS Hackathon with Node.js, Express, DynamoDB, & React
+        Smart Habit & Micro-Goal Accountability Tracker • Intelligent Productivity Ecosystem
       </footer>
     </div>
   );

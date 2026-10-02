@@ -126,7 +126,7 @@ export default function DashboardStats() {
           </div>
         </div>
         <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-          Habits tracked in DynamoDB
+          Active micro-goals tracked
         </p>
       </div>
     </div>

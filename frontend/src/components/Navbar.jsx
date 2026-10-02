@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Plus, Database, Activity, Brain, Moon, Sun, User, LogOut, LogIn, Settings } from 'lucide-react';
+import { Flame, Plus, Database, Activity, Brain, Moon, Sun, User, LogOut, LogIn, Settings, Sparkles } from 'lucide-react';
 import { useHabits } from '../context/HabitContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -64,7 +64,7 @@ export default function Navbar({ onOpenWearables, onOpenAiCoach, theme, toggleTh
                 gap: '4px',
                 fontWeight: 600
               }}>
-                <Database size={10} /> AWS DynamoDB
+                <Sparkles size={10} /> v2.0 SaaS Edition
               </span>
             </div>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>

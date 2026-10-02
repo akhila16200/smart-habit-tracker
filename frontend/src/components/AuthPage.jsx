@@ -42,7 +42,7 @@ export default function AuthPage() {
       await refresh();
     } catch (err) {
       try {
-        await signup('Demo Hackathon User', 'demo@habitpulse.io', 'password123');
+        await signup('Demo User', 'demo@habitpulse.io', 'password123');
         await refresh();
       } catch (e) {
         setError(e.message);
@@ -73,7 +73,7 @@ export default function AuthPage() {
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '20px', background: 'rgba(139, 92, 246, 0.15)', border: '1px solid rgba(139, 92, 246, 0.3)', marginBottom: '16px' }}>
             <Sparkles size={14} color="var(--accent-purple)" />
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-purple)' }}>
-              AWS Hackathon Multi-User Platform
+              Intelligent Multi-User Platform
             </span>
           </div>
 
@@ -88,7 +88,7 @@ export default function AuthPage() {
           </h1>
 
           <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '28px' }}>
-            Transform ambitious goals into 2-minute daily execution steps. Powered by Amazon DynamoDB, automated wearable sync webhooks, and real-time productivity scoring.
+            Transform ambitious goals into 2-minute daily execution steps. Powered by automated wearable sync webhooks, focus tracking, and real-time productivity scoring.
           </p>
 
           {/* Value Highlights */}
@@ -118,7 +118,7 @@ export default function AuthPage() {
                 <Database size={18} />
               </div>
               <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700 }}>Serverless AWS DynamoDB Architecture</h4>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 700 }}>High-Performance Cloud Engine</h4>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Strict user data isolation with instant streak calculation.</p>
               </div>
             </div>
@@ -281,7 +281,7 @@ export default function AuthPage() {
           {/* Quick Demo Access */}
           <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border-color)', textAlign: 'center' }}>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '10px' }}>
-              Exploring for hackathon review?
+              Want a 1-click preview?
             </span>
             <button
               type="button"

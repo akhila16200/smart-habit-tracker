@@ -47,7 +47,7 @@ export default function AuthModal() {
     } catch (err) {
       // If demo user doesn't exist yet, auto signup
       try {
-        await signup('Demo Hackathon User', 'demo@habitpulse.io', 'password123');
+        await signup('Demo User', 'demo@habitpulse.io', 'password123');
         await refresh();
         setIsAuthModalOpen(false);
       } catch (e) {

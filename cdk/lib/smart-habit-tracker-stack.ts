@@ -8,6 +8,8 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as path from 'path';
 
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+
 export class SmartHabitTrackerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -26,7 +28,8 @@ export class SmartHabitTrackerStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'src/lambda.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../../backend'), {
-        exclude: ['node_modules', '.env']
+        ignoreMode: cdk.IgnoreMode.GLOB,
+        exclude: ['.env', '.git']
       }),
       memorySize: 512,
       timeout: cdk.Duration.seconds(15),
@@ -47,7 +50,7 @@ export class SmartHabitTrackerStack extends cdk.Stack {
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
         allowMethods: apigateway.Cors.ALL_METHODS,
-        allowHeaders: ['Content-Type', 'Authorization'],
+        allowHeaders: ['Content-Type', 'Authorization', 'x-user-id'],
       },
     });
 
@@ -66,6 +69,16 @@ export class SmartHabitTrackerStack extends cdk.Stack {
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(websiteBucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+      },
+      additionalBehaviors: {
+        '/api/*': {
+          origin: new origins.RestApiOrigin(api),
+          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        },
       },
       defaultRootObject: 'index.html',
       errorResponses: [
@@ -75,6 +88,14 @@ export class SmartHabitTrackerStack extends cdk.Stack {
           responsePagePath: '/index.html', // SPA Routing fallback
         }
       ]
+    });
+
+    // 6. Deploy React Frontend Bundle to S3 & Invalidate CloudFront Cache
+    new s3deploy.BucketDeployment(this, 'DeployHabitTrackerFrontend', {
+      sources: [s3deploy.Source.asset(path.join(__dirname, '../../frontend/dist'))],
+      destinationBucket: websiteBucket,
+      distribution,
+      distributionPaths: ['/*'],
     });
 
     // Stack Outputs for Easy Hackathon Demo Verification

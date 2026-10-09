@@ -6,6 +6,12 @@ A full-stack, responsive habit tracking application that breaks down ambitious g
 
 ---
 
+## 🌐 Live Demo
+
+👉 **Try the Live Application:** [https://dcmhqyfag1olo.cloudfront.net](https://dcmhqyfag1olo.cloudfront.net)
+
+---
+
 ## 🌟 Key Features
 
 - **Micro-Goal Breakdown**: Deconstruct large habits into clear 2-3 minute sub-tasks to eliminate friction.

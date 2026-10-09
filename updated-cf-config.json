@@ -1,0 +1,180 @@
+{
+  "CallerReference": "e68735b8-728d-1a49-3a60-3485e207648a",
+  "Aliases": {
+    "Quantity": 0
+  },
+  "DefaultRootObject": "index.html",
+  "Origins": {
+    "Quantity": 2,
+    "Items": [
+      {
+        "Id": "SmartHabitTrackerStackHabitTrackerCloudFrontOrigin1ACB22E8C",
+        "DomainName": "smarthabittrackerstack-habittrackerfrontendbucket2-ptkrekkp8kvy.s3.us-east-1.amazonaws.com",
+        "OriginPath": "",
+        "CustomHeaders": {
+          "Quantity": 0
+        },
+        "S3OriginConfig": {
+          "OriginAccessIdentity": "",
+          "OriginReadTimeout": 30
+        },
+        "ConnectionAttempts": 3,
+        "ConnectionTimeout": 10,
+        "OriginShield": {
+          "Enabled": false
+        },
+        "OriginAccessControlId": "E3M9LPI0W2HFYB"
+      },
+      {
+        "Id": "HabitTrackerApiGatewayOrigin",
+        "DomainName": "e559xkvhrf.execute-api.us-east-1.amazonaws.com",
+        "OriginPath": "/prod",
+        "CustomOriginConfig": {
+          "HTTPPort": 80,
+          "HTTPSPort": 443,
+          "OriginProtocolPolicy": "https-only",
+          "OriginSslProtocols": {
+            "Quantity": 1,
+            "Items": [
+              "TLSv1.2"
+            ]
+          },
+          "OriginReadTimeout": 30,
+          "OriginKeepaliveTimeout": 5
+        },
+        "CustomHeaders": {
+          "Quantity": 0
+        },
+        "ConnectionAttempts": 3,
+        "ConnectionTimeout": 10,
+        "OriginShield": {
+          "Enabled": false
+        }
+      }
+    ]
+  },
+  "OriginGroups": {
+    "Quantity": 0
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "SmartHabitTrackerStackHabitTrackerCloudFrontOrigin1ACB22E8C",
+    "TrustedSigners": {
+      "Enabled": false,
+      "Quantity": 0
+    },
+    "TrustedKeyGroups": {
+      "Enabled": false,
+      "Quantity": 0
+    },
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 7,
+      "Items": [
+        "DELETE",
+        "GET",
+        "HEAD",
+        "OPTIONS",
+        "PATCH",
+        "POST",
+        "PUT"
+      ],
+      "CachedMethods": {
+        "Quantity": 2,
+        "Items": [
+          "GET",
+          "HEAD"
+        ]
+      }
+    },
+    "SmoothStreaming": false,
+    "Compress": true,
+    "LambdaFunctionAssociations": {
+      "Quantity": 0
+    },
+    "FunctionAssociations": {
+      "Quantity": 0
+    },
+    "FieldLevelEncryptionId": "",
+    "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+    "GrpcConfig": {
+      "Enabled": false
+    }
+  },
+  "CacheBehaviors": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "PathPattern": "/api/*",
+        "TargetOriginId": "HabitTrackerApiGatewayOrigin",
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "AllowedMethods": {
+          "Quantity": 7,
+          "Items": [
+            "DELETE",
+            "GET",
+            "HEAD",
+            "OPTIONS",
+            "PATCH",
+            "POST",
+            "PUT"
+          ],
+          "CachedMethods": {
+            "Quantity": 2,
+            "Items": [
+              "GET",
+              "HEAD"
+            ]
+          }
+        },
+        "SmoothStreaming": false,
+        "Compress": true,
+        "LambdaFunctionAssociations": {
+          "Quantity": 0
+        },
+        "FunctionAssociations": {
+          "Quantity": 0
+        },
+        "FieldLevelEncryptionId": "",
+        "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+        "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac"
+      }
+    ]
+  },
+  "CustomErrorResponses": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "ErrorCode": 404,
+        "ResponsePagePath": "/index.html",
+        "ResponseCode": "200",
+        "ErrorCachingMinTTL": 300
+      }
+    ]
+  },
+  "Comment": "",
+  "Logging": {
+    "Enabled": false,
+    "IncludeCookies": false,
+    "Bucket": "",
+    "Prefix": ""
+  },
+  "PriceClass": "PriceClass_All",
+  "Enabled": true,
+  "ViewerCertificate": {
+    "CloudFrontDefaultCertificate": true,
+    "SSLSupportMethod": "vip",
+    "MinimumProtocolVersion": "TLSv1",
+    "CertificateSource": "cloudfront"
+  },
+  "Restrictions": {
+    "GeoRestriction": {
+      "RestrictionType": "none",
+      "Quantity": 0
+    }
+  },
+  "WebACLId": "",
+  "HttpVersion": "http2",
+  "IsIPV6Enabled": true,
+  "ContinuousDeploymentPolicyId": "",
+  "Staging": false
+}

@@ -1,0 +1,4 @@
+{
+  "PK": { "S": "USER#fresh_user@example.com" },
+  "SK": { "S": "PROFILE" }
+}

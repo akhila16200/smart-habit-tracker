@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Lock, Mail, User, LogIn, UserPlus, Sparkles } from 'lucide-react';
+import { X, Lock, Mail, User, LogIn, UserPlus, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useHabits } from '../context/HabitContext';
 
@@ -11,6 +11,7 @@ export default function AuthModal() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -198,14 +199,34 @@ export default function AuthModal() {
             <div style={{ position: 'relative' }}>
               <Lock size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 className="form-control"
-                style={{ paddingLeft: '36px' }}
+                style={{ paddingLeft: '36px', paddingRight: '40px' }}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: 0
+                }}
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
           </div>
 
